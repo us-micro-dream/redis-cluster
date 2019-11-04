@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  redis:
+    container_name: redis7001
+    image: redis:5.0.6
+    ports:
+    - "7001:7001"
+    - "17001:17001"
+    volumes:
+    - ./conf:/usr/local/etc/redis
+    - ./data:/data
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+    - "redis-net"
+networks:
+  redis-net:
+    external: true
