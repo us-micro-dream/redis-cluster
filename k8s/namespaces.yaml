@@ -1,0 +1,4 @@
+apiVersion: v1 #api版本,用kubectl explain namespace
+kind: Namespace #定义该对象是命名空间资源
+metadata:
+  name: us-micro-dream-redis   #命名空间的名字

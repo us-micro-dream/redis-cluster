@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1     #api版本,用kubectl explain deployment 获取
+kind: Deployment                    #定义该对象是deployement资源
+metadata:                           #该对象的一些元数据
+  name: redis-cluster-7000             #定义对象的名字
+  namespace: us-micro-dream-redis                     #定义对象所处的命名空间
+  labels:                            #定义该对象的labels
+    redis-cluster-7000: redis-cluster-7000        #具体key=>value
+spec:                               #定义对pod控制的描述
+  replicas: 1                       #pod负载均衡的个数，会有控制器自动分配到各node上
+  selector:                        #定义该pod如何被service资源找到
+    matchLabels:                   #匹配label是以下键值对的，service就能找到pod
+      redis-cluster-7000: redis-cluster-7000
+  template:                       #pod的定义
+    metadata:                     #pod的元数据
+      labels:                     #pod所拥有的标签,
+        redis-cluster-7000: redis-cluster-7000
+    spec:
+      containers:                 #容器的定义,容器拥有上面pod的元数据属性
+      - name: redis     #容器名字
+        image: redis:5.0.6       #docker 镜像
+        imagePullPolicy: IfNotPresent #镜像在本地不存的时候，去源拉取
+        ports:                    #容器暴露的端口，和serivce资源配合使用
+        - containerPort: 7000     #注意，容器暴露的端口不是在宿主机上的，而是在service
+        - containerPort: 17000
+      nodeSelector:   #这是重点！！！定向调度定义到node的标签定义,需要为node节点添加标签
+        redis-cluster-7000: redis-cluster-7000  #kubectl label nodes <node名字> redis-cluster-7000=redis-cluster-7000
